@@ -7,13 +7,13 @@ module Sauce
         unless @browser
           puts "[Connecting to Sauce OnDemand...]"
           config = Sauce::Config.new
-          @domain = "#{rand(10000)}.test"
+          @domain = config.browser_url
           @sauce_tunnel = Sauce::Connect.new(:host => "127.0.0.1",
                                              :port => rack_server.port,
-                                             :domain => @domain,
+                                             :domain => config.browser_url,
                                              :quiet => true)
           @sauce_tunnel.wait_until_ready
-          @browser = Sauce::Selenium2.new(:name => "Capybara", :browser_url => "http://#{@domain}")
+          @browser = Sauce::Selenium2.new(:name => "Capybara", :browser_url => "http://#{config.browser_url}")
           at_exit do
             @browser.quit
             @sauce_tunnel.disconnect
